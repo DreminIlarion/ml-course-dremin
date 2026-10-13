@@ -1,66 +1,37 @@
-# Module 2 — House Prices: предобработка данных и регрессия
+# Module 2 - House Prices: предобработка и регрессия
 
-**Автор:** Дремин Иларион Алексеевич  
-**Группа:** АСОиУб-23-2  
-**Преподаватель:** Игорь Спирин  
-**Репозиторий:** https://github.com/DreminIlarion/ml-course-dremin
+**Автор:** Дремин Иларион Алексеевич, АСОиУб-23-2  
+**Дата:** 2026-10-13
 
-## Описание
+## Результаты
 
-Практический проект по предобработке данных и базовым алгоритмам регрессии на датасете Kaggle House Prices.
+| Модель | RMSE (log) | MAE (log) | R² (log) | RMSE ($) |
+|--------|-----------:|----------:|---------:|---------:|
+| Linear Regression | 0.1259 | 0.0849 | 0.8879 | $19,640 |
+| Ridge | 0.1219 | 0.0825 | 0.8949 | $18,745 |
+| **Lasso** | **0.1147** | **0.0771** | **0.9069** | **$17,453** |
+| ElasticNet | 0.1149 | 0.0772 | 0.9067 | **$17,408** |
 
-В notebook реализованы:
-- EDA и минимум 5 визуализаций;
-- анализ и обработка пропусков;
-- обработка выбросов;
-- `log1p(SalePrice)`;
-- Feature Engineering;
-- ordinal и one-hot encoding;
-- StandardScaler;
-- Linear Regression, Ridge, Lasso, ElasticNet;
-- GridSearchCV;
-- RMSE, MAE, R² в логарифмическом и исходном масштабе;
-- анализ коэффициентов и остатков;
-- `predict_price()` с 5 демонстрационными примерами;
-- сохранение моделей через joblib;
-- проверка загрузки из raw GitHub.
+**Лучшая модель по RMSE в log-пространстве:** Lasso  
+**Лучшая модель по RMSE в долларах:** ElasticNet
 
-## Данные
+Lasso также выполнил отбор признаков:
+- ненулевых признаков: 116
+- отброшенных признаков: 156
 
-Скачайте `train.csv` и `test.csv` из Kaggle House Prices и положите в `data/`.
+## 🚀 Быстрый старт
 
-## Структура
+```python
+import joblib
+import requests
+from io import BytesIO
 
-```text
-module-2-house-prices/
-├── README.md
-├── notebook.ipynb
-├── data/
-│   ├── train.csv
-│   ├── test.csv
-│   └── house_prices_info.md
-├── models/
-│   ├── lr_model.pkl
-│   ├── ridge_model.pkl
-│   ├── lasso_model.pkl
-│   ├── enet_model.pkl
-│   ├── best_model.pkl
-│   ├── scaler.pkl
-│   ├── feature_cols.json
-│   └── metrics.json
-├── examples/
-│   ├── eda_plots.png
-│   ├── residuals.png
-│   └── predictions_scatter.png
-└── requirements.txt
-```
+BASE_URL = "https://raw.githubusercontent.com/DreminIlarion/ml-course-dremin/main/module-2-house-prices"
 
-## Запуск
+model = joblib.load(
+    BytesIO(requests.get(f"{BASE_URL}/models/lasso_model.pkl").content)
+)
 
-```bash
-pip install -r requirements.txt
-jupyter notebook notebook.ipynb
-```
-
-В Google Colab можно открыть notebook, предварительно загрузив `data/train.csv` и `data/test.csv`.
-
+scaler = joblib.load(
+    BytesIO(requests.get(f"{BASE_URL}/models/scaler.pkl").content)
+)
